@@ -1,3 +1,4 @@
+/*
 package is.qrk3;
 
 import is.qrk3.util.NameGen;
@@ -18,3 +19,4 @@ public class DemoResource {
     }
 
 }
+*/
