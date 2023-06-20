@@ -1,0 +1,64 @@
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'maven-publish'
+    apply plugin: 'java-test-fixtures'
+
+    group = "is.qrk3"
+
+    sourceCompatibility = '1.17'
+
+    compileJava {
+        options.annotationProcessorGeneratedSourcesDirectory = provider {
+            file("${projectDir}/src/main/generated")
+        }
+    }
+
+    task cleanGen(type:Delete) {
+        delete "${projectDir}/src/main/generated"
+    }
+
+    tasks.clean.dependsOn(tasks.cleanGen)
+
+    dependencies {
+        api enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+
+        api 'io.quarkus:quarkus-rest-client'
+        api 'io.quarkus:quarkus-rest-client-jackson'
+        api 'io.quarkus:quarkus-arc'
+        api 'io.quarkus:quarkus-hibernate-validator'
+//        api 'io.quarkus:quarkus-vertx'
+    }
+
+    idea {
+        module {
+            generatedSourceDirs += new File(projectDir, 'src/main/generated')
+            outputDir file('build/classes/java/main')
+            testOutputDir file('build/classes/java/test')
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+
+        maven {
+            url "https://packages.confluent.io/maven/"
+        }
+
+        mavenLocal()
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allJava
+        archiveClassifier = 'sources'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+}

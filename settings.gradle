@@ -1,0 +1,4 @@
+rootProject.name = 'qrk3'
+
+include ':backend:app',
+        ':backend:core'
